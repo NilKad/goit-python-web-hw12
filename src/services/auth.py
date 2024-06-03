@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 
 from src.database.db import get_db
-from src.repository import users as repositories_users
+from src.repositories import users as repositories_users
 
 
 class Auth:
@@ -105,4 +105,4 @@ class Auth:
         return user
 
 
-auth_service = Auth()
+auth_service: Auth = Auth()

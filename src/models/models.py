@@ -1,8 +1,8 @@
 import enum
 from datetime import date
 
-from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column
-from sqlalchemy import String, Integer, String, DateTime, func, Enum
+from sqlalchemy import String, Integer, String, DateTime, ForeignKey, func, Enum
+from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column, relationship
 
 # from sqlalchemy.orm import DeclarativeBase
 
@@ -26,6 +26,8 @@ class Contact(Base):
     email: Mapped[str] = mapped_column(String(50))
     birthday: Mapped[str] = mapped_column(String(10), nullable=True, default=None)
     addition: Mapped[str] = mapped_column(String(250), nullable=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=True)
+    user: Mapped["User"] = relationship("User", backref="todos", lazy="joined")
 
 
 class User(Base):

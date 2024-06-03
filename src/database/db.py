@@ -2,6 +2,7 @@ import contextlib
 import logging
 from typing import Optional
 
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     async_sessionmaker,
@@ -30,6 +31,8 @@ class DataBaseSessionManager:
         session = self._session_maker()
         try:
             yield session
+        except HTTPException as err:
+            raise err
         except Exception as err:
             # logger.error(f"$$$$$$$$$$$$$$$-----$$$$$$$$$ {err}")
             await session.rollback()

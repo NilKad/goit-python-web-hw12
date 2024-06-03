@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from src.schemas.user import UserResponse
+
 
 class ContactSchema(BaseModel):
     first_name: str = Field(..., min_length=2, max_length=50)
@@ -30,8 +32,9 @@ class ContactResponse(ContactSchema):
     last_name: str
     phone: str
     email: str
-    birthday: str
-    addition: str
+    birthday: str | None
+    addition: str | None
+    user: UserResponse | None
 
     class Config:
         from_attributes: True
