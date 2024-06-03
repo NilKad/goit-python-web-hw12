@@ -1,6 +1,6 @@
 import logging
 import pprint
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models.models import Contact, User
@@ -17,11 +17,17 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession, user: User):
 
 
 async def search_contacts(
-    filters: list, limit: int, offset: int, db: AsyncSession, user: User
+    filters: dict, limit: int, offset: int, db: AsyncSession, user: User
 ):
-    # logging.info(f"search contacts, filter={filter}")
-    stmt = select(Contact).filter_by(**filters, user=user).offset(offset).limit(limit)
+    logging.info(f"search contacts, filter={filters}")
+    stmt = select(Contact).where(Contact.user == user)
+
+    for field, value in filters.items():
+        if value:
+            stmt = stmt.where(getattr(Contact, field).ilike(f"%{value}%"))
+    stmt = stmt.offset(offset).limit(limit)
     contacts = await db.execute(stmt)
+    print(contacts)
     return contacts.scalars().all()
 
 
